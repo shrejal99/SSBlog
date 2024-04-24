@@ -1,0 +1,55 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = "View";
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .blog-post {
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+    }
+
+    .blog-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .author-name {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .published-date {
+        font-size: 14px;
+        color: #999;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        font-size: 16px;
+        color: #555;
+    }
+</style>
+
+<div class="container">
+    <div class="blog-post">
+        <h2 class="blog-title">@Model.Title</h2>
+        <p class="author-name">@Model.AuthorName</p>
+        <p class="published-date">Published on: @Model.PublishedOn</p>
+        <p class="content">@Model.Content</p>
+    </div>
+</div>

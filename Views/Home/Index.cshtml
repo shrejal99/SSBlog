@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div style="text-align-last: center">
+    <a href="Home/Add" class="btn btn-primary">Add New Blog</a>
+</div>
+
+<table id="blogsTable" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author Name</th>
+            <th>Description</th>
+            <th>Published On</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#blogsTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "/api/Blog/GetBlogs",
+                    "type": "POST",
+                    "contentType": "application/json",
+                    "data": function (d) {
+                        var o = {
+                            Draw: d.draw,
+                            Start: d.start,
+                            Length: d.length,
+                            Columns: d.columns,
+                            Order: d.order,
+                            Search: d.search
+                        }
+                        return JSON.stringify(o)
+                    }
+                },
+                "columns": [
+                    {
+                        "data": "title",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            return '<a href="Home/View/' + row.id + '">' + data + '</a>';
+                        }
+                    },
+                    { "data": "authorName", "orderable": false },
+                    { "data": "description", "orderable": false },
+                    { "data": "publishedOn", "orderable": false },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            return '<button onclick="editRow(' + row.id + ')" class="btn btn-primary">Edit</button>';
+                        }
+                    },
+                    {
+                        "data": null,
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            return '<button onclick="deleteRow(' + row.id + ')" class="btn btn-danger">Delete</button>';
+                        }
+                    }
+                ]
+            });
+        });
+
+        function editRow(id) {
+            window.location.href = 'Home/Edit/' + id;
+        }
+
+        function deleteRow(id) {
+            $.ajax({
+                url: "/api/Blog/" + id, // Use the correct endpoint for deleting a specific blog post
+                type: "DELETE",
+                success: function (result) {
+                    $('#blogsTable').DataTable().row($('#blogsTable tbody tr[data-id="' + id + '"]')).remove().draw(false);
+                    console.log("Deleted row with ID: " + id);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error deleting row with ID: " + id + ". " + error); // Log the error message
+                }
+            });
+        }
+    </script>
+}
